@@ -2,7 +2,7 @@
 
 import time
 
-from app import scheduler, session
+from app import scheduler, session, LOGGER
 from app.api import get_citizens, get_residents
 from app.database import get_state_regions, save_citizens, save_residents
 
@@ -17,19 +17,27 @@ def print_players(players):
 
 def job_update_citizens(state_id):
     """Update citizens"""
+    LOGGER.info('Run update citizens for state "%s"', state_id)
     regions = get_state_regions(state_id)
     for region in regions:
+        LOGGER.info('"%s": get citizens', region.name)
         citizens = get_citizens(region.id)
-        print_players(citizens)
+        LOGGER.info('"%s": "%s" citizens', region.name, len(citizens))
+        # print_players(citizens)
         save_citizens(region.id, citizens)
+        LOGGER.info('"%s": done saving citizens', region.name)
 
 def job_update_residents(state_id):
     """Update residents"""
+    LOGGER.info('Run update residents for state "%s"', state_id)
     regions = get_state_regions(state_id)
     for region in regions:
+        LOGGER.info('"%s": get residents', region.name)
         residents = get_residents(region.id)
-        print_players(residents)
+        LOGGER.info('"%s": "%s" residents ', region.name, len(residents))
+        # print_players(residents)
         save_residents(region.id, residents)
+        LOGGER.info('"%s": done saving residents', region.name)
 
 
 def add_update_citizens(state_id):
@@ -49,7 +57,7 @@ def add_update_residents(state_id):
         job_update_residents,
         'cron',
         args=[state_id],
-        id='citizens_{}'.format(state_id),
+        id='residents_{}'.format(state_id),
         replace_existing=True,
         hour='1,7,13,19'
     )

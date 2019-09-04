@@ -1,6 +1,7 @@
 """Inwoner Residency en Locatie Tracker"""
 
 import os
+import logging
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -20,6 +21,12 @@ session = Session()
 # scheduler
 scheduler = BackgroundScheduler()
 scheduler.start()
+
+logging.basicConfig(
+    format='%(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+LOGGER = logging.getLogger(__name__)
 
 # api
 BASE_URL = os.environ["API_URL"]

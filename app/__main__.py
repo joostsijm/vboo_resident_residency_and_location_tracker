@@ -40,7 +40,7 @@ def add_update_citizens(state_id):
         args=[state_id],
         id='citizens_{}'.format(state_id),
         replace_existing=True,
-        hour='1,7,13,19'
+        hour='1,3,5,7,9,11,13,15,17,19,21,23'
     )
 
 def add_update_residents(state_id):

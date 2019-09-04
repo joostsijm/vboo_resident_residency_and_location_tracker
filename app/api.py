@@ -13,7 +13,7 @@ def get_residents(region_id):
 
 def get_citizens(region_id):
     """Get citizens from region"""
-    return download_players(region_id, 'state')
+    return download_players(region_id, 'region')
 
 def download_players(region_id, player_type):
     """Download the players"""

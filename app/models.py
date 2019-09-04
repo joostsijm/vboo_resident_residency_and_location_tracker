@@ -66,5 +66,17 @@ class Player(Base):
     id = Column(BigInteger, primary_key=True)
     name = Column(String)
     nation = Column(String)
-    residencies = relationship('Region', secondary='player_residency')
-    locations = relationship('Region', secondary='player_location')
+    residencies = relationship(
+        'Region',
+        secondary='player_residency',
+        backref=backref('residents', lazy='dynamic'),
+        lazy='dynamic',
+        order_by='desc(PlayerResidency.from_date_time)'
+    )
+    locations = relationship(
+        'Region',
+        secondary='player_location',
+        backref=backref('citizens', lazy='dynamic'),
+        lazy='dynamic',
+        order_by='desc(PlayerLocation.from_date_time)'
+    )

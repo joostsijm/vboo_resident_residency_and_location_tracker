@@ -1,7 +1,9 @@
 """Database module"""
 
+from datetime import datetime
+
 from app import session
-from app.models import State, Region, Player, StateRegion
+from app.models import State, Region, Player, StateRegion, PlayerLocation, PlayerResidency
 
 
 def get_state_regions(state_id):
@@ -10,48 +12,52 @@ def get_state_regions(state_id):
     regions = state.regions.filter(StateRegion.until_date_time == None).all()
     return regions
 
-# def get_latest_professor(state_id, department_type):
-#     """Get latest professor from database"""
-#     department = get_department(state_id, department_type)
-#     professor = department.department_stats.order_by(DepartmentStat.date_time.desc()).first()
-#     return professor
-#
-# def get_player(player_id, player_name):
-#     """Get player from database"""
-#     player = session.query(Player).get(player_id)
-#     if player is None:
-#         player = Player()
-#         player.id = player_id
-#         player.name = player_name
-#         session.add(player)
-#         session.commit()
-#     return player
-#
-# def get_department(state_id, department_type):
-#     """Get department from database"""
-#     department = session.query(Department).filter(
-#         Department.state_id == state_id
-#     ).filter(
-#         Department.department_type == department_type
-#     ).first()
-#     if department is None:
-#         department = Department()
-#         department.state_id = state_id
-#         department.department_type = department_type
-#         session.add(department)
-#         session.commit()
-#     return department
-#
-# def save_professors(state_id, department_type, professors):
-#     """Save professors to database"""
-#     department = get_department(state_id, department_type)
-#
-#     for professor in professors:
-#         player = get_player(professor['id'], professor['name'])
-#         department_stat = DepartmentStat()
-#         department_stat.department_id = department.id
-#         department_stat.date_time = professor['date_time']
-#         department_stat.points = professor['points']
-#         department_stat.player_id = player.id
-#         session.add(department_stat)
-#     session.commit()
+def save_citizens(region_id, citizens):
+    """Save citizens to database"""
+    for player_dict in citizens:
+        player = session.query(Player).get(player_dict['id'])
+        if player is None:
+            player = Player()
+            player.id = player_dict['id']
+            player.name = player_dict['name']
+            session.add(player)
+            session.commit()
+        last_region = player.locations.first()
+        if not last_region or last_region.id != region_id:
+            player_location = PlayerLocation()
+            player_location.player_id = player.id
+            player_location.region_id = region_id
+            player_location.from_date_time = datetime.now()
+            session.add(player_location)
+            session.commit()
+            if last_region:
+                old_player_location = session.query(PlayerLocation) \
+                    .filter(PlayerLocation.player_id == player.id) \
+                    .filter(PlayerLocation.region_id == last_region.id).first()
+                old_player_location.until_date_time = datetime.now()
+                session.commit()
+
+def save_residents(region_id, residents):
+    """Save residents to database"""
+    for player_dict in residents:
+        player = session.query(Player).get(player_dict['id'])
+        if player is None:
+            player = Player()
+            player.id = player_dict['id']
+            player.name = player_dict['name']
+            session.add(player)
+            session.commit()
+        last_residency = player.residencies.first()
+        if not last_residency or last_residency.id != region_id:
+            player_location = PlayerResidency()
+            player_location.player_id = player.id
+            player_location.region_id = region_id
+            player_location.from_date_time = datetime.now()
+            session.add(player_location)
+            session.commit()
+            if last_residency:
+                old_player_residency = session.query(PlayerResidency) \
+                    .filter(PlayerResidency.player_id == player.id) \
+                    .filter(PlayerResidency.region_id == last_residency.id).first()
+                old_player_residency.until_date_time = datetime.now()
+                session.commit()

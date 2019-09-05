@@ -70,7 +70,7 @@ def parse_work_permits(html):
             'id': int(columns[1].find(class_='small')['user']),
             'name': columns[1].contents[0].strip(),
             'nation': columns[5]['title'],
-            'registration_date': registration_date
+            'from': registration_date
         })
     return players, bool(len(players_tree) >= 25)
 

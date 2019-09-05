@@ -68,7 +68,7 @@ def save_work_permits(state_id, work_permits):
             state_work_permit = StateWorkPermit()
             state_work_permit.player_id = player.id
             state_work_permit.state_id = state_id
-            state_work_permit.from_date_time = datetime.now()
+            state_work_permit.from_date_time = player_dict['from']
             session.add(state_work_permit)
             session.commit()
             if last_work_permit:
@@ -85,7 +85,8 @@ def save_player(player_dict):
     player.id = player_dict['id']
     player.name = player_dict['name']
     player.nation = player_dict['nation']
-    player.registration_date = player_dict['registration_date']
+    if 'registration_date' in player_dict:
+        player.registration_date = player_dict['registration_date']
     session.add(player)
     session.commit()
     return player

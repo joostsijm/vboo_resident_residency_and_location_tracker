@@ -10,10 +10,9 @@ from app.database import get_state_regions, save_citizens, save_residents, save_
 def print_players(players):
     """Print professors"""
     for player in players:
-        print('{:20} {:30} {:20} {:30}'.format(
+        print('{:20} {:30} {:30}'.format(
             player['id'],
             player['name'],
-            player['registration_date'].strftime('%d-%m-%Y'),
             player['nation'],
         ))
 
@@ -46,7 +45,7 @@ def job_update_work_permits(state_id):
     LOGGER.info('"%s": get work permits ', state_id)
     work_permits = get_work_permits(state_id)
     LOGGER.info('"%s": "%s" work permits', state_id, len(work_permits))
-    print_players(work_permits)
+    # print_players(work_permits)
     save_work_permits(state_id, work_permits)
     LOGGER.info('"%s": done saving work_permits', state_id)
 
@@ -73,22 +72,35 @@ def add_update_residents(state_id):
         hour='1,7,13,19'
     )
 
+def add_update_work_permits(state_id):
+    """Add jobs"""
+    scheduler.add_job(
+        job_update_work_permits,
+        'cron',
+        args=[state_id],
+        id='work_permits_{}'.format(state_id),
+        replace_existing=True,
+        hour='4'
+    )
 
 if __name__ == '__main__':
     # jobs
     # job_update_citizens(2788)
     # job_update_residents(2788)
-    job_update_work_permits(2788)
+    # job_update_work_permits(2788)
 
     # Verenigde Nederlanden
     add_update_citizens(2788)
     add_update_residents(2788)
+    add_update_work_permits(2788)
     # Belgium
     add_update_citizens(2604)
     add_update_residents(2604)
+    add_update_work_permits(2604)
     # De Provincien
     add_update_citizens(2620)
     add_update_residents(2620)
+    add_update_work_permits(2620)
 
     try:
         while True:

@@ -3,16 +3,18 @@
 import time
 
 from app import scheduler, session, LOGGER
-from app.api import get_citizens, get_residents
-from app.database import get_state_regions, save_citizens, save_residents
+from app.api import get_citizens, get_residents, get_work_permits
+from app.database import get_state_regions, save_citizens, save_residents, save_work_permits
 
 
 def print_players(players):
     """Print professors"""
     for player in players:
-        print('{:20} {:30}'.format(
+        print('{:20} {:30} {:20} {:30}'.format(
             player['id'],
             player['name'],
+            player['registration_date'].strftime('%d-%m-%Y'),
+            player['nation'],
         ))
 
 def job_update_citizens(state_id):
@@ -38,6 +40,15 @@ def job_update_residents(state_id):
         # print_players(residents)
         save_residents(region.id, residents)
         LOGGER.info('"%s": done saving residents', region.name)
+
+def job_update_work_permits(state_id):
+    """Update citizens"""
+    LOGGER.info('"%s": get work permits ', state_id)
+    work_permits = get_work_permits(state_id)
+    LOGGER.info('"%s": "%s" work permits', state_id, len(work_permits))
+    print_players(work_permits)
+    save_work_permits(state_id, work_permits)
+    LOGGER.info('"%s": done saving work_permits', state_id)
 
 
 def add_update_citizens(state_id):
@@ -67,6 +78,7 @@ if __name__ == '__main__':
     # jobs
     # job_update_citizens(2788)
     # job_update_residents(2788)
+    job_update_work_permits(2788)
 
     # Verenigde Nederlanden
     add_update_citizens(2788)

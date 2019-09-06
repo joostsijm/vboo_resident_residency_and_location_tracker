@@ -14,10 +14,12 @@ def get_state_regions(state_id):
 
 def save_citizens(region_id, citizens):
     """Save citizens to database"""
+    player_ids = []
     for player_dict in citizens:
         player = session.query(Player).get(player_dict['id'])
         if player is None:
             player = save_player(player_dict)
+        player_ids.append(player.id)
         last_region = player.locations.first()
         if not last_region or last_region.id != region_id:
             player_location = PlayerLocation()
@@ -26,20 +28,23 @@ def save_citizens(region_id, citizens):
             player_location.from_date_time = datetime.now()
             session.add(player_location)
             session.commit()
-            if last_region:
-                old_player_location = session.query(PlayerLocation) \
-                    .filter(PlayerLocation.player_id == player.id) \
-                    .filter(PlayerLocation.region_id == last_region.id) \
-                    .order_by(PlayerLocation.from_date_time.desc()).first()
-                old_player_location.until_date_time = datetime.now()
-                session.commit()
+    current_citizens = session.query(PlayerLocation) \
+        .filter(PlayerLocation.region_id == region_id) \
+        .filter(PlayerLocation.until_date_time == None).all()
+    for current_citizen in current_citizens:
+        if current_citizen.player_id not in player_ids:
+            current_citizen.until_date_time = datetime.now()
+    session.commit()
+
 
 def save_residents(region_id, residents):
     """Save residents to database"""
+    player_ids = []
     for player_dict in residents:
         player = session.query(Player).get(player_dict['id'])
         if player is None:
             player = save_player(player_dict)
+        player_ids.append(player.id)
         last_residency = player.residencies.first()
         if not last_residency or last_residency.id != region_id:
             player_location = PlayerResidency()
@@ -48,21 +53,23 @@ def save_residents(region_id, residents):
             player_location.from_date_time = datetime.now()
             session.add(player_location)
             session.commit()
-            if last_residency:
-                old_player_residency = session.query(PlayerResidency) \
-                    .filter(PlayerResidency.player_id == player.id) \
-                    .filter(PlayerResidency.region_id == last_residency.id) \
-                    .order_by(PlayerResidency.from_date_time.desc()).first()
-                old_player_residency.until_date_time = datetime.now()
-                session.commit()
+    current_residents = session.query(PlayerResidency) \
+        .filter(PlayerResidency.region_id == region_id) \
+        .filter(PlayerResidency.until_date_time == None).all()
+    for current_resident in current_residents:
+        if current_resident.player_id not in player_ids:
+            current_resident.until_date_time = datetime.now()
+    session.commit()
 
 
 def save_work_permits(state_id, work_permits):
     """Save residents to database"""
+    player_ids = []
     for player_dict in work_permits:
         player = session.query(Player).get(player_dict['id'])
         if player is None:
             player = save_player(player_dict)
+        player_ids.append(player.id)
         last_work_permit = player.state_work_permits.first()
         if not last_work_permit or last_work_permit.id != state_id:
             state_work_permit = StateWorkPermit()
@@ -71,13 +78,13 @@ def save_work_permits(state_id, work_permits):
             state_work_permit.from_date_time = player_dict['from']
             session.add(state_work_permit)
             session.commit()
-            if last_work_permit:
-                old_state_work_permit = session.query(StateWorkPermit) \
-                    .filter(StateWorkPermit.player_id == player.id) \
-                    .filter(StateWorkPermit.state_id == last_work_permit.id) \
-                    .order_by(StateWorkPermit.from_date_time.desc()).first()
-                old_state_work_permit.until_date_time = datetime.now()
-                session.commit()
+    current_work_permits = session.query(StateWorkPermit) \
+        .filter(StateWorkPermit.state_id == state_id) \
+        .filter(StateWorkPermit.until_date_time == None).all()
+    for current_work_permit in current_work_permits:
+        if current_work_permit.player_id not in player_ids:
+            current_work_permit.until_date_time = datetime.now()
+    session.commit()
 
 def save_player(player_dict):
     """Save player to database"""

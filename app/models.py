@@ -13,7 +13,7 @@ class PlayerResidency(Base):
     __tablename__ = 'player_residency'
     player_id = Column(BigInteger, ForeignKey('player.id'), primary_key=True)
     region_id = Column(Integer, ForeignKey('region.id'), primary_key=True)
-    from_date_time = Column(DateTime)
+    from_date_time = Column(DateTime, primary_key=True)
     until_date_time = Column(DateTime)
 
 
@@ -22,7 +22,7 @@ class PlayerLocation(Base):
     __tablename__ = 'player_location'
     player_id = Column(BigInteger, ForeignKey('player.id'), primary_key=True)
     region_id = Column(Integer, ForeignKey('region.id'), primary_key=True)
-    from_date_time = Column(DateTime)
+    from_date_time = Column(DateTime, primary_key=True)
     until_date_time = Column(DateTime)
 
 
@@ -31,7 +31,7 @@ class StateRegion(Base):
     __tablename__ = 'state_region'
     state_id = Column(Integer, ForeignKey('state.id'), primary_key=True)
     region_id = Column(Integer, ForeignKey('region.id'), primary_key=True)
-    from_date_time = Column(DateTime)
+    from_date_time = Column(DateTime, primary_key=True)
     until_date_time = Column(DateTime)
 
 
@@ -40,7 +40,7 @@ class StateWorkPermit(Base):
     __tablename__ = 'state_work_permit'
     state_id = Column(Integer, ForeignKey('state.id'), primary_key=True)
     player_id = Column(BigInteger, ForeignKey('player.id'), primary_key=True)
-    from_date_time = Column(DateTime)
+    from_date_time = Column(DateTime, primary_key=True)
     until_date_time = Column(DateTime)
 
 

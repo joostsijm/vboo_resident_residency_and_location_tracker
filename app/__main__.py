@@ -2,7 +2,7 @@
 
 import time
 
-from app import scheduler, session, LOGGER
+from app import scheduler, LOGGER
 from app.api import get_citizens, get_residents, get_work_permits
 from app.database import get_state_regions, save_citizens, save_residents, save_work_permits
 
@@ -86,7 +86,7 @@ def add_update_work_permits(state_id):
 if __name__ == '__main__':
     # jobs
     # job_update_citizens(2788)
-    # job_update_residents(2788)
+    job_update_residents(2788)
     # job_update_work_permits(2788)
 
     # Verenigde Nederlanden
@@ -106,6 +106,5 @@ if __name__ == '__main__':
         while True:
             time.sleep(100)
     except KeyboardInterrupt:
-        print('Exiting application')
-        session.close()
+        LOGGER.info('Exiting application')
         exit()

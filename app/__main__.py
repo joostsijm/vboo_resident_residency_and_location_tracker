@@ -86,7 +86,7 @@ def add_update_work_permits(state_id):
 if __name__ == '__main__':
     # jobs
     # job_update_citizens(2788)
-    job_update_residents(2788)
+    # job_update_residents(2788)
     # job_update_work_permits(2788)
 
     # Verenigde Nederlanden

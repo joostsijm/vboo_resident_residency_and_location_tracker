@@ -35,7 +35,6 @@ def save_citizens(region_id, citizens):
     current_citizens = session.query(PlayerLocation) \
         .filter(PlayerLocation.region_id == region_id) \
         .filter(PlayerLocation.until_date_time == None).all()
-    print(player_ids)
     for current_citizen in current_citizens:
         if current_citizen.player_id not in player_ids:
             current_citizen.until_date_time = datetime.now()

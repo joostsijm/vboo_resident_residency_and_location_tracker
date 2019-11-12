@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from app import Session
+from app import Session, LOGGER
 from app.models import State, Player, StateRegion, \
      PlayerLocation, PlayerResidency, StateWorkPermit
 
@@ -19,6 +19,7 @@ def save_citizens(region_id, citizens):
     """Save citizens to database"""
     session = Session()
     player_ids = []
+    new_citizens = 0
     for player_dict in citizens:
         player = session.query(Player).get(player_dict['id'])
         if player is None:
@@ -26,18 +27,23 @@ def save_citizens(region_id, citizens):
         player_ids.append(player.id)
         last_region = player.locations.first()
         if not last_region or last_region.id != region_id:
+            new_citizens += 1
             player_location = PlayerLocation()
             player_location.player_id = player.id
             player_location.region_id = region_id
-            player_location.from_date_time = datetime.now()
+            player_location.from_date_time = datetime.now().replace(second=0, minute=0)
             session.add(player_location)
+    LOGGER.info('regio %6s: "%s" new citizens', region_id, new_citizens)
     session.commit()
     current_citizens = session.query(PlayerLocation) \
         .filter(PlayerLocation.region_id == region_id) \
         .filter(PlayerLocation.until_date_time == None).all()
+    left_citizens = 0
     for current_citizen in current_citizens:
         if current_citizen.player_id not in player_ids:
-            current_citizen.until_date_time = datetime.now()
+            left_citizens += 1
+            current_citizen.until_date_time = datetime.now().replace(second=0, minute=0)
+    LOGGER.info('regio %6s: "%s" citizens left', region_id, left_citizens)
     session.commit()
     session.close()
 
@@ -56,7 +62,7 @@ def save_residents(region_id, residents):
             player_location = PlayerResidency()
             player_location.player_id = player.id
             player_location.region_id = region_id
-            player_location.from_date_time = datetime.now()
+            player_location.from_date_time = datetime.now().replace(second=0, minute=0)
             session.add(player_location)
             session.commit()
     current_residents = session.query(PlayerResidency) \
@@ -64,7 +70,7 @@ def save_residents(region_id, residents):
         .filter(PlayerResidency.until_date_time == None).all()
     for current_resident in current_residents:
         if current_resident.player_id not in player_ids:
-            current_resident.until_date_time = datetime.now()
+            current_resident.until_date_time = datetime.now().replace(second=0, minute=0)
     session.commit()
     session.close()
 
@@ -91,7 +97,7 @@ def save_work_permits(state_id, work_permits):
         .filter(StateWorkPermit.until_date_time == None).all()
     for current_work_permit in current_work_permits:
         if current_work_permit.player_id not in player_ids:
-            current_work_permit.until_date_time = datetime.now()
+            current_work_permit.until_date_time = datetime.now().replace(second=0, minute=0)
     session.commit()
     session.close()
 

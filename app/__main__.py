@@ -21,33 +21,33 @@ def job_update_citizens(state_id):
     LOGGER.info('Run update citizens for state "%s"', state_id)
     regions = get_state_regions(state_id)
     for region in regions:
-        LOGGER.info('"%s": get citizens', region.name)
+        LOGGER.info('regio %6s: get citizens', region.id)
         citizens = get_citizens(region.id)
-        LOGGER.info('"%s": "%s" citizens', region.name, len(citizens))
+        LOGGER.info('regio %6s: "%s" citizens', region.id, len(citizens))
         # print_players(citizens)
         save_citizens(region.id, citizens)
-        LOGGER.info('"%s": done saving citizens', region.name)
+        LOGGER.info('regio %6s: done saving citizens', region.id)
 
 def job_update_residents(state_id):
     """Update residents"""
     LOGGER.info('Run update residents for state "%s"', state_id)
     regions = get_state_regions(state_id)
     for region in regions:
-        LOGGER.info('"%s": get residents', region.name)
+        LOGGER.info('regio %6s: get residents', region.id)
         residents = get_residents(region.id)
-        LOGGER.info('"%s": "%s" residents ', region.name, len(residents))
+        LOGGER.info('regio %6s: "%s" residents ', region.id, len(residents))
         # print_players(residents)
         save_residents(region.id, residents)
-        LOGGER.info('"%s": done saving residents', region.name)
+        LOGGER.info('regio %6s: done saving residents', region.id)
 
 def job_update_work_permits(state_id):
     """Update citizens"""
-    LOGGER.info('"%s": get work permits ', state_id)
+    LOGGER.info('state "%s": get work permits ', state_id)
     work_permits = get_work_permits(state_id)
-    LOGGER.info('"%s": "%s" work permits', state_id, len(work_permits))
+    LOGGER.info('state "%s": "%s" work permits', state_id, len(work_permits))
     # print_players(work_permits)
     save_work_permits(state_id, work_permits)
-    LOGGER.info('"%s": done saving work_permits', state_id)
+    LOGGER.info('state "%s": done saving work_permits', state_id)
 
 
 def add_update_citizens(state_id):

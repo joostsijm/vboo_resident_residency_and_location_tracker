@@ -116,7 +116,7 @@ def save_work_permits(state_id, work_permits):
             .filter(StateWorkPermit.until_date_time == None) \
             .first()
         if not last_work_permit:
-            new_residents += 1
+            new_work_permits += 1
             state_work_permit = StateWorkPermit()
             state_work_permit.player_id = player.id
             state_work_permit.state_id = state_id

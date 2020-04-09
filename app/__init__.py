@@ -14,18 +14,19 @@ from app.models import Base, State, Region, Player
 load_dotenv()
 
 # database
-engine = create_engine(os.environ["DATABASE_URI"], client_encoding='utf8')
-Session = sessionmaker(bind=engine)
+ENGINE = create_engine(os.environ["DATABASE_URI"], client_encoding='utf8')
+SESSION = sessionmaker(bind=ENGINE)
 
 # scheduler
-scheduler = BackgroundScheduler()
-scheduler.start()
+SCHEDULER = BackgroundScheduler(
+    daemon=True,
+    job_defaults={'misfire_grace_time': 900},
+)
+SCHEDULER.start()
 
 # module logger
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
-
-# scheduler logger
 SCHEDULER_LOGGER = logging.getLogger('apscheduler')
 SCHEDULER_LOGGER.setLevel(logging.DEBUG)
 
@@ -45,7 +46,6 @@ FILE_HANDLER.setFormatter(FORMATTER)
 # add the handlers to logger
 LOGGER.addHandler(STREAM_HANDLER)
 LOGGER.addHandler(FILE_HANDLER)
-
 SCHEDULER_LOGGER.addHandler(STREAM_HANDLER)
 SCHEDULER_LOGGER.addHandler(FILE_HANDLER)
 

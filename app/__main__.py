@@ -29,9 +29,9 @@ if __name__ == '__main__':
     ]
 
     # jobs
-    jobs.update_citizens(STATE_IDS, REGION_IDS)
-    jobs.update_residents(STATE_IDS, REGION_IDS)
-    jobs.update_work_permits(STATE_IDS)
+    # jobs.update_citizens(STATE_IDS, REGION_IDS)
+    # jobs.update_residents(STATE_IDS, REGION_IDS)
+    # jobs.update_work_permits(STATE_IDS)
 
     # Update citizens
     SCHEDULER.add_job(
